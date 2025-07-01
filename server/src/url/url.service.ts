@@ -74,4 +74,17 @@ export class UrlService {
       data: { slug: dto.newSlug },
     });
   }
+
+  async getVisitsBySlug(userId: string, slug: string) {
+    const url = await this.prisma.url.findUnique({
+      where: { slug },
+      include: { visits: { orderBy: { createdAt: 'desc' } } },
+    });
+
+    if (!url || url.userId !== userId) {
+      throw new NotFoundException('URL not found or access denied');
+    }
+
+    return url.visits;
+  }
 }

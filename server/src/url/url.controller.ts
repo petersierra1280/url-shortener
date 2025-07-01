@@ -26,4 +26,10 @@ export class UrlController {
   updateSlug(@Req() req: RequestWithUser, @Param('slug') slug: string, @Body() dto: UpdateSlugDto) {
     return this.urlService.updateSlug(req.user['sub'], slug, dto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':slug/visits')
+  getVisits(@Req() req: RequestWithUser, @Param('slug') slug: string) {
+    return this.urlService.getVisitsBySlug(req.user.sub, slug);
+  }
 }
