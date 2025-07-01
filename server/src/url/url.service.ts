@@ -17,7 +17,7 @@ export class UrlService {
     }
 
     try {
-      new URL(dto.originalUrl); // ✅ Sanity check using URL constructor
+      new URL(dto.originalUrl);
     } catch {
       throw new ConflictException('Invalid URL');
     }
@@ -36,17 +36,27 @@ export class UrlService {
     });
   }
 
-  async findBySlug(slug: string) {
+  async findBySlug(slug: string, meta?: { ip?: string; userAgent?: string }) {
     const url = await this.prisma.url.findUnique({
       where: { slug },
     });
 
     if (!url) throw new NotFoundException('Short URL not found');
 
-    // Track visit
+    // Increment visit count
     await this.prisma.url.update({
       where: { slug },
       data: { visitCount: { increment: 1 } },
+    });
+
+    // Log visit
+    await this.prisma.visit.create({
+      data: {
+        urlId: url.id,
+        ip: meta?.ip || null,
+        userAgent: meta?.userAgent || null,
+        userId: null,
+      },
     });
 
     return url.originalUrl;

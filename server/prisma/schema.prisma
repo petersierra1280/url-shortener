@@ -13,6 +13,7 @@ model User {
   password  String
   createdAt DateTime @default(now())
   urls      Url[]
+  visits    Visit[]
 }
 
 model Url {
@@ -23,4 +24,16 @@ model Url {
   createdAt   DateTime @default(now())
   userId      String
   user        User     @relation(fields: [userId], references: [id])
+  visits      Visit[]
+}
+
+model Visit {
+  id        String   @id @default(uuid())
+  urlId     String
+  userId    String?
+  url       Url      @relation(fields: [urlId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  ip        String?
+  userAgent String?
 }

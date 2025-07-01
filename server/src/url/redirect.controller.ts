@@ -1,18 +1,19 @@
-import { Controller, Get, Param, Res, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Param, Res, Req } from '@nestjs/common';
 import { UrlService } from './url.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { UseInterceptors } from '@nestjs/common';
 
 @Controller('r')
 export class RedirectController {
   constructor(private readonly urlService: UrlService) {}
 
+  @UseInterceptors()
   @Get(':slug')
-  async redirect(@Param('slug') slug: string, @Res() res: Response) {
-    try {
-      const destination = await this.urlService.findBySlug(slug);
-      return res.redirect(destination);
-    } catch (err) {
-      throw new NotFoundException('Slug not found');
-    }
+  async redirect(@Param('slug') slug: string, @Req() req: Request, @Res() res: Response) {
+    const originalUrl = await this.urlService.findBySlug(slug, {
+      ip: req.ip,
+      userAgent: req.headers['user-agent'] || '',
+    });
+    return res.redirect(originalUrl);
   }
 }
