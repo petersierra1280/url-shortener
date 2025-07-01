@@ -13,3 +13,14 @@ export class UserController {
     return this.userService.getUserUrls(req.user.sub);
   }
 }
+
+@Controller('dashboard')
+export class DashboardController {
+  constructor(private readonly userService: UserService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('summary')
+  getDashboardSummary(@Req() req: RequestWithUser) {
+    return this.userService.getTopVisitedUrls(req.user.sub);
+  }
+}
