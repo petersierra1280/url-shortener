@@ -5,7 +5,7 @@ import { RequestWithUser } from '../auth/request-with-user.interface';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('urls')
