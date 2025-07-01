@@ -32,4 +32,10 @@ export class UrlController {
   getVisits(@Req() req: RequestWithUser, @Param('slug') slug: string) {
     return this.urlService.getVisitsBySlug(req.user.sub, slug);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':slug/stats')
+  getStats(@Req() req: RequestWithUser, @Param('slug') slug: string) {
+    return this.urlService.getUrlStats(req.user.sub, slug);
+  }
 }
