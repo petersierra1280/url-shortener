@@ -4,6 +4,7 @@ import { CreateUrlDto } from './dto/create-url.dto';
 import { UpdateSlugDto } from './dto/update-slug.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RequestWithUser } from '../auth/request-with-user.interface';
+import { Delete } from '@nestjs/common';
 
 @Controller('url')
 export class UrlController {
@@ -37,5 +38,11 @@ export class UrlController {
   @Get(':slug/stats')
   getStats(@Req() req: RequestWithUser, @Param('slug') slug: string) {
     return this.urlService.getUrlStats(req.user.sub, slug);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':slug')
+  deleteUrl(@Req() req: RequestWithUser, @Param('slug') slug: string) {
+    return this.urlService.deleteUrl(req.user.sub, slug);
   }
 }

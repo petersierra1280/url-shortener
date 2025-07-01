@@ -23,7 +23,7 @@ model Url {
   visitCount  Int      @default(0)
   createdAt   DateTime @default(now())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   visits      Visit[]
 }
 

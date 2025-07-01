@@ -111,4 +111,19 @@ export class UrlService {
       lastVisit: url.visits[0]?.createdAt ?? null,
     };
   }
+
+  async deleteUrl(userId: string, slug: string) {
+    const url = await this.prisma.url.findUnique({
+      where: { slug },
+    });
+
+    if (!url || url.userId !== userId) {
+      throw new NotFoundException('URL not found or access denied');
+    }
+
+    await this.prisma.visit.deleteMany({ where: { urlId: url.id } });
+    await this.prisma.url.delete({ where: { slug } });
+
+    return { message: 'URL deleted successfully' };
+  }
 }
