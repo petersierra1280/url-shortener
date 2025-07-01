@@ -1,11 +1,15 @@
-import { IsOptional, IsString, IsUrl, Matches } from 'class-validator';
+import { IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUrlDto {
-  @IsUrl()
+  @IsUrl({}, { message: 'Must be a valid URL' })
   originalUrl: string;
 
   @IsOptional()
   @IsString()
-  @Matches(/^[a-zA-Z0-9_-]{4,20}$/)
+  @MinLength(4)
+  @MaxLength(20)
+  @Matches(/^[a-zA-Z0-9_-]+$/, {
+    message: 'Slug must be alphanumeric and 4–20 characters (a-z, A-Z, 0-9, _ or -)',
+  })
   slug?: string;
 }

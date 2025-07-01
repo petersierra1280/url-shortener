@@ -16,15 +16,24 @@ export class UrlService {
       throw new ConflictException('Slug already in use');
     }
 
-    const newUrl = await this.prisma.url.create({
+    try {
+      new URL(dto.originalUrl); // ✅ Sanity check using URL constructor
+    } catch {
+      throw new ConflictException('Invalid URL');
+    }
+
+    const parsedUrl = new URL(dto.originalUrl);
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      throw new ConflictException('Only http and https protocols are supported');
+    }
+
+    return this.prisma.url.create({
       data: {
         slug,
         originalUrl: dto.originalUrl,
         userId,
       },
     });
-
-    return newUrl;
   }
 
   async findBySlug(slug: string) {
