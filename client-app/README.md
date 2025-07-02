@@ -48,3 +48,23 @@ npm install
 # 2. Start the app
 npm run dev
 ```
+
+## Environment configuration
+
+The app expects an `.env.local` file with:
+
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+
+## Scaffolding structure
+
+```
+src/
+├── components/        // Reusable UI: Layout, Header, Toast, Cards
+├── context/           // AuthContext for login/register/session
+├── lib/               // Shared logic (validation, API wrapper)
+├── pages/             // Next.js routes: login, register, dashboard, etc.
+└── services/          // API calls
+```
