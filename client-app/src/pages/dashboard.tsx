@@ -15,6 +15,7 @@ export default function DashboardPage() {
   const { user, token, logout } = useAuth();
   const router = useRouter();
 
+  const [loading, setLoading] = useState(true);
   const [limit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
@@ -28,12 +29,15 @@ export default function DashboardPage() {
     if (!token) {
       router.push("/login");
     } else {
+      setLoading(true);
       fetchUserUrls(token, limit, offset)
         .then((res) => {
           setUrls(res.data);
           setTotal(res.total);
+          setError("");
         })
-        .catch(() => setError("Failed to load URLs"));
+        .catch(() => setError("Failed to load URLs"))
+        .finally(() => setLoading(false));
     }
   }, [token, offset]);
 
@@ -104,11 +108,15 @@ export default function DashboardPage() {
       {error && <p>{error}</p>}
 
       <h2>Your URLs</h2>
+
+      {loading && <p>Loading your URLs...</p>}
+
       {urls.length === 0 && !error && (
         <p style={{ color: "#666", fontStyle: "italic", marginTop: "1rem" }}>
           You haven&apos;t created any short URLs yet.
         </p>
       )}
+
       {urls.map((url) => (
         <URLCard
           key={url.id}
