@@ -59,7 +59,7 @@ export default function DashboardPage() {
       setToastMessage("Short URL created successfully");
     } catch {
       setError(
-        "Failed to shorten URL. Maybe the slug is taken or the URL is invalid."
+        "Failed to shorten URL. Check that the slug entered is not already taken."
       );
     }
   };
