@@ -9,10 +9,15 @@ import {
 } from "../services/url.service";
 import { useRouter } from "next/router";
 import URLCard from "../components/URLCard";
+import PaginationControls from "../components/PaginationControls";
 
 export default function DashboardPage() {
   const { user, token, logout } = useAuth();
   const router = useRouter();
+
+  const [limit] = useState(10);
+  const [offset, setOffset] = useState(0);
+  const [total, setTotal] = useState(0);
 
   const [urls, setUrls] = useState<UrlItem[]>([]);
   const [originalUrl, setOriginalUrl] = useState("");
@@ -23,11 +28,14 @@ export default function DashboardPage() {
     if (!token) {
       router.push("/login");
     } else {
-      fetchUserUrls(token)
-        .then(setUrls)
+      fetchUserUrls(token, limit, offset)
+        .then((res) => {
+          setUrls(res.data);
+          setTotal(res.total);
+        })
         .catch(() => setError("Failed to load URLs"));
     }
-  }, [token]);
+  }, [token, offset]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,6 +116,15 @@ export default function DashboardPage() {
           onDelete={handleDelete}
         />
       ))}
+
+      {total > limit && (
+        <PaginationControls
+          total={total}
+          limit={limit}
+          offset={offset}
+          onPageChange={(newOffset) => setOffset(newOffset)}
+        />
+      )}
     </div>
   );
 }

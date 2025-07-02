@@ -22,9 +22,14 @@ export async function createUrl(
   return res.data;
 }
 
-export async function fetchUserUrls(token: string): Promise<UrlItem[]> {
+export async function fetchUserUrls(
+  token: string,
+  limit: number,
+  offset: number
+): Promise<{ total: number; limit: number; offset: number; data: UrlItem[] }> {
   const res = await api.get("/user/urls", {
     headers: { Authorization: `Bearer ${token}` },
+    params: { limit, offset },
   });
   return res.data.data;
 }
