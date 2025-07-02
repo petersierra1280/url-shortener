@@ -1,4 +1,4 @@
-# URL Shortener – Frontend App
+# URL Shortener - Frontend App
 
 This is the **React frontend** for the URL Shortener application built using **Next.js** and **TypeScript**.  
 It allows users to register, log in, shorten URLs, manage slugs, view visit stats, and track clicks — all via a user-friendly interface.

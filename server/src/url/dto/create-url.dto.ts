@@ -9,7 +9,7 @@ export class CreateUrlDto {
   @MinLength(4)
   @MaxLength(20)
   @Matches(/^[a-zA-Z0-9_-]+$/, {
-    message: 'Slug must be alphanumeric and 4–20 characters (a-z, A-Z, 0-9, _ or -)',
+    message: 'Slug must be alphanumeric and 4-20 characters (a-z, A-Z, 0-9, _ or -)',
   })
   slug?: string;
 }
