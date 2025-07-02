@@ -14,12 +14,12 @@ export class UserController {
     @Query('limit') limit: string,
     @Query('offset') offset: string,
   ) {
-    const parsedLimit = Math.min(parseInt(limit ?? '20', 10), 100);
+    const parsedLimit = Math.min(parseInt(limit ?? '5', 10), 100);
     const parsedOffset = parseInt(offset ?? '0', 10);
 
     return this.userService.getUserUrlsPaginated(
       req.user.sub,
-      isNaN(parsedLimit) ? 20 : parsedLimit,
+      isNaN(parsedLimit) ? 5 : parsedLimit,
       isNaN(parsedOffset) ? 0 : parsedOffset,
     );
   }

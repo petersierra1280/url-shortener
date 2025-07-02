@@ -23,7 +23,7 @@ export default function DashboardPage() {
   const pageParam = parseInt((router.query.page as string) || "1", 10);
 
   const [loading, setLoading] = useState(true);
-  const [limit] = useState(10);
+  const [limit] = useState(5);
   const [offset, setOffset] = useState((pageParam - 1) * limit);
   const [total, setTotal] = useState(0);
 
