@@ -8,6 +8,10 @@ export type UrlItem = {
   createdAt: string;
 };
 
+export type UrlStats = UrlItem & {
+  lastVisit: string | null;
+};
+
 export async function createUrl(
   token: string,
   payload: { originalUrl: string; slug?: string }
@@ -42,4 +46,14 @@ export async function deleteUrl(token: string, slug: string): Promise<void> {
   await api.delete(`/url/${slug}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+}
+
+export async function fetchUrlStats(
+  token: string,
+  slug: string
+): Promise<UrlStats> {
+  const res = await api.get(`/url/${slug}/stats`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
 }

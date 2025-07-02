@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { UrlItem } from "../services/url.service";
+import { useEffect, useState } from "react";
+import { UrlItem, fetchUrlStats, UrlStats } from "../services/url.service";
 
 interface Props {
   url: UrlItem;
+  token: string;
   onCopy: (shortUrl: string) => void;
   onUpdate: (
     oldSlug: string,
@@ -12,10 +13,23 @@ interface Props {
   onDelete: (slug: string) => void;
 }
 
-export default function URLCard({ url, onCopy, onUpdate, onDelete }: Props) {
+export default function URLCard({
+  url,
+  token,
+  onCopy,
+  onUpdate,
+  onDelete,
+}: Props) {
   const [editing, setEditing] = useState(false);
   const [newSlug, setNewSlug] = useState(url.slug);
   const [error, setError] = useState("");
+  const [stats, setStats] = useState<UrlStats | null>(null);
+
+  useEffect(() => {
+    fetchUrlStats(token, url.slug)
+      .then(setStats)
+      .catch(() => setStats(null));
+  }, [token, url.slug]);
 
   const shortUrl = `${window.location.origin}/r/${url.slug}`;
 
@@ -57,9 +71,21 @@ export default function URLCard({ url, onCopy, onUpdate, onDelete }: Props) {
       <p>
         <strong>Original:</strong> {url.originalUrl}
       </p>
-      <p>
-        <strong>Visits:</strong> {url.visitCount}
-      </p>
+      {stats ? (
+        <>
+          <p>
+            <strong>Visits:</strong> {stats.visitCount}
+          </p>
+          <p>
+            <strong>Last Visit:</strong>{" "}
+            {stats.lastVisit
+              ? new Date(stats.lastVisit).toLocaleString()
+              : "Never"}
+          </p>
+        </>
+      ) : (
+        <p>Loading stats...</p>
+      )}
       <button onClick={() => onCopy(shortUrl)}>Copy</button>
       <button onClick={() => confirm("Delete this URL?") && onDelete(url.slug)}>
         Delete

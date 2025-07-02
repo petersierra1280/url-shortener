@@ -100,6 +100,7 @@ export default function DashboardPage() {
         <URLCard
           key={url.id}
           url={url}
+          token={token!}
           onCopy={handleCopy}
           onUpdate={(old, next, onError) =>
             handleUpdateSlug(old, next, onError)
