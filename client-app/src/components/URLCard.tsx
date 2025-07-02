@@ -59,7 +59,11 @@ export default function URLCard({
       <CardContent>
         <Stack spacing={1}>
           <Typography variant="subtitle2">Original:</Typography>
-          <Typography variant="body2">{url.originalUrl}</Typography>
+          <Typography variant="body2">
+            <a href={url.originalUrl} target="_blank" rel="noopener noreferrer">
+              {url.originalUrl}
+            </a>
+          </Typography>
 
           <Typography variant="subtitle2">Slug:</Typography>
           {editing ? (
