@@ -1,23 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../context/AuthContext";
-import {
-  Container,
-  TextField,
-  Button,
-  Stack,
-  Typography,
-  Alert,
-} from "@mui/material";
+import { Container, TextField, Stack, Typography, Alert } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 export default function RegisterPage() {
-  const { register } = useAuth();
+  const { register, user } = useAuth();
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/dashboard");
+    }
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
