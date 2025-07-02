@@ -96,7 +96,7 @@ export default function DashboardPage() {
       <h2>Your URLs</h2>
       {loading && <p>Loading your URLs...</p>}
       {!loading && urls.length === 0 && !error && (
-        <p>You haven’t created any short URLs yet.</p>
+        <p>You haven't created any short URLs yet.</p>
       )}
       {urls.map((url) => (
         <URLCard
