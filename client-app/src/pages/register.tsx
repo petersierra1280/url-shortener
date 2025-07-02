@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useAuth } from "../context/AuthContext";
 import { Container, TextField, Stack, Typography, Alert } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { isValidEmail } from "../lib/utils.validations";
 
 export default function RegisterPage() {
   const { register, user } = useAuth();
@@ -23,7 +24,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
 
-    if (!email.includes("@") || password.length < 6) {
+    if (!isValidEmail(email) || password.length < 6) {
       setError("Email must be valid and password at least 6 characters.");
       return;
     }

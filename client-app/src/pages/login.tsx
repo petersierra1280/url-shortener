@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { Container, TextField, Stack, Typography, Alert } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { login as authLogin } from "../services/auth.service";
+import { isValidEmail } from "../lib/utils.validations";
 
 export default function LoginPage() {
   const { login, user } = useAuth();
@@ -24,7 +25,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    if (!email.includes("@") || password.length < 6) {
+    if (!isValidEmail(email) || password.length < 6) {
       setError("Email must be valid and password at least 6 characters.");
       return;
     }
