@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../context/AuthContext";
-import {
-  Container,
-  TextField,
-  Stack,
-  Typography,
-  Alert,
-} from "@mui/material";
+import { Container, TextField, Stack, Typography, Alert } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { login as authLogin } from "../services/auth.service";
 
@@ -29,6 +23,12 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!email.includes("@") || password.length < 6) {
+      setError("Email must be valid and password at least 6 characters.");
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await authLogin(email, password);

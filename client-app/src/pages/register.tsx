@@ -22,6 +22,12 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!email.includes("@") || password.length < 6) {
+      setError("Email must be valid and password at least 6 characters.");
+      return;
+    }
+
     setLoading(true);
     try {
       await register({ email, password });

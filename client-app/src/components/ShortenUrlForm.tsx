@@ -11,15 +11,44 @@ export default function ShortenUrlForm({ onSubmit, error }: Props) {
   const [originalUrl, setOriginalUrl] = useState("");
   const [slug, setSlug] = useState("");
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState("");
+
+  const isValidUrl = (value: string): boolean => {
+    try {
+      const url = new URL(value);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+      return false;
+    }
+  };
+
+  const isValidSlug = (slug: string): boolean => /^[a-zA-Z0-9-_]+$/.test(slug);
+
+  const displayError = formError || error;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    setFormError("");
+
+    if (!isValidUrl(originalUrl)) {
+      setFormError("Please enter a valid URL.");
+      return;
+    }
+
+    if (slug && !isValidSlug(slug)) {
+      setFormError("Slug must contain only letters, numbers, - or _.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       onSubmit(originalUrl, slug || undefined);
       setOriginalUrl("");
       setSlug("");
+    } catch {
+      setFormError("There was an error trying to shorten URL.");
     } finally {
       setLoading(false);
     }
@@ -43,7 +72,7 @@ export default function ShortenUrlForm({ onSubmit, error }: Props) {
         <LoadingButton type="submit" variant="contained" loading={loading}>
           Shorten
         </LoadingButton>
-        {error && <Typography color="error">{error}</Typography>}
+        {displayError && <Typography color="error">{displayError}</Typography>}
       </Stack>
     </form>
   );
