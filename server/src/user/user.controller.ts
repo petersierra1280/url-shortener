@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RequestWithUser } from '../auth/request-with-user.interface';
@@ -9,8 +9,19 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('urls')
-  getUrls(@Req() req: RequestWithUser) {
-    return this.userService.getUserUrls(req.user.sub);
+  getPaginatedUrls(
+    @Req() req: RequestWithUser,
+    @Query('limit') limit: string,
+    @Query('offset') offset: string,
+  ) {
+    const parsedLimit = Math.min(parseInt(limit ?? '20', 10), 100);
+    const parsedOffset = parseInt(offset ?? '0', 10);
+
+    return this.userService.getUserUrlsPaginated(
+      req.user.sub,
+      isNaN(parsedLimit) ? 20 : parsedLimit,
+      isNaN(parsedOffset) ? 0 : parsedOffset,
+    );
   }
 }
 

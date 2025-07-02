@@ -5,11 +5,23 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getUserUrls(userId: string) {
-    return this.prisma.url.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-    });
+  async getUserUrlsPaginated(userId: string, limit = 20, offset = 0) {
+    const [urls, total] = await this.prisma.$transaction([
+      this.prisma.url.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip: offset,
+      }),
+      this.prisma.url.count({ where: { userId } }),
+    ]);
+
+    return {
+      total,
+      limit,
+      offset,
+      data: urls,
+    };
   }
 
   async getTopVisitedUrls(userId: string) {
