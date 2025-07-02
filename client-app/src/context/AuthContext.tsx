@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import Cookies from "js-cookie";
 import { register as registerUser } from "../services/auth.service";
 
 type User = {
@@ -33,15 +32,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    const stored = Cookies.get("token");
-    if (stored) {
-      setToken(stored);
-      setUser(jwtDecode<User>(stored));
+    const storedToken = localStorage.getItem("token");
+
+    if (!storedToken) return;
+
+    try {
+      const decoded = jwtDecode<TokenPayload>(storedToken);
+
+      if (!decoded.sub || !decoded.email) {
+        throw new Error("Missing required payload");
+      }
+
+      setToken(storedToken);
+      setUser({ id: decoded.sub, email: decoded.email });
+    } catch (err) {
+      // Invalid or malformed token → force logout
+      logout();
     }
   }, []);
 
   const login = (newToken: string) => {
-    Cookies.set("token", newToken);
     localStorage.setItem("token", newToken);
     setToken(newToken);
     const decoded = jwtDecode<TokenPayload>(newToken);
@@ -55,7 +65,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    Cookies.remove("token");
     setToken(null);
     setUser(null);
     localStorage.removeItem("token");
@@ -72,7 +81,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const res = await registerUser(email, password);
     const token = res.token;
     const decoded = jwtDecode<TokenPayload>(token);
-    Cookies.set("token", token);
     localStorage.setItem("token", token);
     localStorage.setItem(
       "user",
