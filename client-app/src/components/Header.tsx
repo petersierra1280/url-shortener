@@ -1,3 +1,4 @@
+import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/router";
 
@@ -11,25 +12,20 @@ export default function Header() {
   };
 
   return (
-    <header
-      style={{
-        padding: "1rem",
-        borderBottom: "1px solid #ccc",
-        display: "flex",
-        justifyContent: "space-between",
-      }}
-    >
-      <div>
-        <strong>URL Shortener</strong>
-      </div>
-      <div>
+    <AppBar position="static" color="default" elevation={1}>
+      <Toolbar>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          URL Shortener
+        </Typography>
         {user && (
           <>
-            <span style={{ marginRight: "1rem" }}>Welcome, {user.email}</span>
-            <button onClick={handleLogout}>Logout</button>
+            <Typography sx={{ mr: 2 }}>Welcome, {user.email}</Typography>
+            <Button variant="outlined" color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
           </>
         )}
-      </div>
-    </header>
+      </Toolbar>
+    </AppBar>
   );
 }

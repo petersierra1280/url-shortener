@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Snackbar } from "@mui/material";
 
 interface Props {
   message: string;
@@ -7,34 +7,13 @@ interface Props {
 }
 
 export default function Toast({ message, onClose, duration = 3000 }: Props) {
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisible(false);
-      onClose();
-    }, duration);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!visible) return null;
-
   return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: "2rem",
-        right: "2rem",
-        backgroundColor: "#333",
-        color: "#fff",
-        padding: "1rem 1.5rem",
-        borderRadius: "4px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-        zIndex: 9999,
-      }}
-    >
-      {message}
-    </div>
+    <Snackbar
+      open={!!message}
+      autoHideDuration={duration}
+      onClose={onClose}
+      message={message}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+    />
   );
 }

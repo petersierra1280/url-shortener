@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Stack, TextField, Button, Typography } from "@mui/material";
 
 interface Props {
   onSubmit: (originalUrl: string, slug?: string) => void;
@@ -18,18 +19,24 @@ export default function ShortenUrlForm({ onSubmit, error }: Props) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        placeholder="Original URL"
-        value={originalUrl}
-        onChange={(e) => setOriginalUrl(e.target.value)}
-      />
-      <input
-        placeholder="Custom Slug (optional)"
-        value={slug}
-        onChange={(e) => setSlug(e.target.value)}
-      />
-      <button type="submit">Shorten</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <Stack spacing={2}>
+        <TextField
+          label="Original URL"
+          value={originalUrl}
+          onChange={(e) => setOriginalUrl(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Custom Slug (optional)"
+          value={slug}
+          onChange={(e) => setSlug(e.target.value)}
+          fullWidth
+        />
+        <Button type="submit" variant="contained">
+          Shorten
+        </Button>
+        {error && <Typography color="error">{error}</Typography>}
+      </Stack>
     </form>
   );
 }

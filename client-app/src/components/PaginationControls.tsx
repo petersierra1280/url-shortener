@@ -1,3 +1,5 @@
+import { Button, ButtonGroup, Typography, Stack } from "@mui/material";
+
 interface Props {
   total: number;
   limit: number;
@@ -11,28 +13,28 @@ export default function PaginationControls({
   offset,
   onPageChange,
 }: Props) {
-  const currentPage = Math.floor(offset / limit) + 1;
+  const page = Math.floor(offset / limit) + 1;
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div style={{ marginTop: "2rem" }}>
-      <button
-        disabled={offset === 0}
-        onClick={() => onPageChange(Math.max(offset - limit, 0))}
-      >
-        Previous
-      </button>
-
-      <span style={{ margin: "0 1rem" }}>
-        Page {currentPage} of {totalPages}
-      </span>
-
-      <button
-        disabled={offset + limit >= total}
-        onClick={() => onPageChange(offset + limit)}
-      >
-        Next
-      </button>
-    </div>
+    <Stack direction="row" alignItems="center" spacing={2} mt={4}>
+      <ButtonGroup>
+        <Button
+          disabled={offset === 0}
+          onClick={() => onPageChange(Math.max(offset - limit, 0))}
+        >
+          Previous
+        </Button>
+        <Button
+          disabled={offset + limit >= total}
+          onClick={() => onPageChange(offset + limit)}
+        >
+          Next
+        </Button>
+      </ButtonGroup>
+      <Typography variant="body2">
+        Page {page} of {totalPages}
+      </Typography>
+    </Stack>
   );
 }

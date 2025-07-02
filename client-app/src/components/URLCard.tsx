@@ -1,4 +1,12 @@
-import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Stack,
+  TextField,
+} from "@mui/material";
+import { useState, useEffect } from "react";
 import { UrlItem, fetchUrlStats, UrlStats } from "../services/url.service";
 
 interface Props {
@@ -20,77 +28,83 @@ export default function URLCard({
   onUpdate,
   onDelete,
 }: Props) {
+  const [stats, setStats] = useState<UrlStats | null>(null);
   const [editing, setEditing] = useState(false);
   const [newSlug, setNewSlug] = useState(url.slug);
-  const [error, setError] = useState("");
-  const [stats, setStats] = useState<UrlStats | null>(null);
 
   useEffect(() => {
     fetchUrlStats(token, url.slug)
       .then(setStats)
       .catch(() => setStats(null));
-  }, [token, url.slug]);
-
-  const shortUrl = `${window.location.origin}/r/${url.slug}`;
+  }, [url.slug, token]);
 
   const handleSave = () => {
-    if (!newSlug || newSlug === url.slug) {
-      setEditing(false);
-      return;
+    if (newSlug && newSlug !== url.slug) {
+      onUpdate(url.slug, newSlug, () => {});
     }
-    onUpdate(url.slug, newSlug, (msg) => {
-      setError(msg);
-    });
     setEditing(false);
   };
 
+  const shortUrl = `${window.location.origin}/r/${url.slug}`;
+
   return (
-    <div
-      style={{
-        border: "1px solid gray",
-        padding: "1rem",
-        marginBottom: "1rem",
-      }}
-    >
-      <p>
-        <strong>Slug:</strong>{" "}
-        {editing ? (
-          <>
-            <input
-              value={newSlug}
-              onChange={(e) => setNewSlug(e.target.value)}
-            />
-            <button onClick={handleSave}>Save</button>
-          </>
-        ) : (
-          <>
-            {url.slug} <button onClick={() => setEditing(true)}>Edit</button>
-          </>
-        )}
-      </p>
-      <p>
-        <strong>Original:</strong> {url.originalUrl}
-      </p>
-      {stats ? (
-        <>
-          <p>
-            <strong>Visits:</strong> {stats.visitCount}
-          </p>
-          <p>
-            <strong>Last Visit:</strong>{" "}
-            {stats.lastVisit
-              ? new Date(stats.lastVisit).toLocaleString()
-              : "Never"}
-          </p>
-        </>
-      ) : (
-        <p>Loading stats...</p>
-      )}
-      <button onClick={() => onCopy(shortUrl)}>Copy</button>
-      <button onClick={() => confirm("Delete this URL?") && onDelete(url.slug)}>
-        Delete
-      </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
+    <Card variant="outlined" sx={{ mb: 2 }}>
+      <CardContent>
+        <Stack spacing={1}>
+          <Typography variant="subtitle2">Original:</Typography>
+          <Typography variant="body2">{url.originalUrl}</Typography>
+
+          <Typography variant="subtitle2">Slug:</Typography>
+          {editing ? (
+            <Stack direction="row" spacing={1}>
+              <TextField
+                size="small"
+                value={newSlug}
+                onChange={(e) => setNewSlug(e.target.value)}
+              />
+              <Button onClick={handleSave}>Save</Button>
+            </Stack>
+          ) : (
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Typography>{url.slug}</Typography>
+              <Button size="small" onClick={() => setEditing(true)}>
+                Edit
+              </Button>
+            </Stack>
+          )}
+
+          {stats && (
+            <>
+              <Typography variant="subtitle2">Visits:</Typography>
+              <Typography variant="body2">{stats.visitCount}</Typography>
+              <Typography variant="body2">
+                Last Visit:{" "}
+                {stats.lastVisit
+                  ? new Date(stats.lastVisit).toLocaleString()
+                  : "Never"}
+              </Typography>
+            </>
+          )}
+
+          <Stack direction="row" spacing={2} mt={1}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => onCopy(shortUrl)}
+            >
+              Copy
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              color="error"
+              onClick={() => confirm("Delete this URL?") && onDelete(url.slug)}
+            >
+              Delete
+            </Button>
+          </Stack>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }

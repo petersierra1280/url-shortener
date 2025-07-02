@@ -1,19 +1,33 @@
+import { Button, Container, Stack, Typography } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
-export default function EntryPage() {
+export default function Home() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) router.replace("/dashboard");
+  }, [user]);
+
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h1>Welcome to URL Shortener</h1>
-      <p>Please login or create a new account to get started.</p>
-
-      <div style={{ marginTop: "1.5rem" }}>
-        <Link href="/login">
-          <button style={{ marginRight: "1rem" }}>Login</button>
+    <Container sx={{ mt: 10, textAlign: "center" }}>
+      <Typography variant="h4" gutterBottom>
+        Welcome to the URL Shortener app
+      </Typography>
+      <Typography variant="body1">
+        Please login or create an account to continue.
+      </Typography>
+      <Stack direction="row" spacing={2} justifyContent="center" mt={4}>
+        <Link href="/login" passHref>
+          <Button variant="contained">Login</Button>
         </Link>
-        <Link href="/register">
-          <button>Create Account</button>
+        <Link href="/register" passHref>
+          <Button variant="outlined">Create Account</Button>
         </Link>
-      </div>
-    </div>
+      </Stack>
+    </Container>
   );
 }

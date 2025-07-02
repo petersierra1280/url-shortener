@@ -8,6 +8,7 @@ import {
   deleteUrl,
 } from "../services/url.service";
 import { useRouter } from "next/router";
+import { Typography } from "@mui/material";
 
 import URLCard from "../components/URLCard";
 import Layout from "../components/Layout";
@@ -88,16 +89,27 @@ export default function DashboardPage() {
 
   return (
     <Layout>
+      <Typography variant="h4" gutterBottom>
+        Dashboard
+      </Typography>
+
       <ShortenUrlForm
         onSubmit={(url, customSlug) => handleSubmitUrl(url, customSlug)}
         error={error}
       />
 
-      <h2>Your URLs</h2>
-      {loading && <p>Loading your URLs...</p>}
+      <Typography variant="h6" sx={{ mt: 4 }}>
+        Your URLs
+      </Typography>
+
+      {loading && <Typography>Loading your URLs...</Typography>}
+
       {!loading && urls.length === 0 && !error && (
-        <p>You haven't created any short URLs yet.</p>
+        <Typography color="text.secondary">
+          You haven't created any short URLs yet.
+        </Typography>
       )}
+
       {urls.map((url) => (
         <URLCard
           key={url.id}
@@ -110,6 +122,7 @@ export default function DashboardPage() {
           onDelete={handleDelete}
         />
       ))}
+
       {!loading && total > limit && (
         <PaginationControls
           total={total}
@@ -118,6 +131,7 @@ export default function DashboardPage() {
           onPageChange={(newOffset) => setOffset(newOffset)}
         />
       )}
+
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage("")} />
       )}
