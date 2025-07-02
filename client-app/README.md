@@ -57,6 +57,8 @@ The app expects an `.env.local` file with:
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
 
+The variable `NEXT_PUBLIC_API_URL` should be the URL where the `server` API is running.
+
 
 ## Scaffolding structure
 
