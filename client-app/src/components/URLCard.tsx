@@ -6,6 +6,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { useState, useEffect } from "react";
 import { UrlItem, fetchUrlStats, UrlStats } from "../services/url.service";
 
@@ -31,6 +32,7 @@ export default function URLCard({
   const [stats, setStats] = useState<UrlStats | null>(null);
   const [editing, setEditing] = useState(false);
   const [newSlug, setNewSlug] = useState(url.slug);
+  const [loadingSave, setLoadingSave] = useState(false);
 
   useEffect(() => {
     fetchUrlStats(token, url.slug)
@@ -39,10 +41,15 @@ export default function URLCard({
   }, [url.slug, token]);
 
   const handleSave = () => {
-    if (newSlug && newSlug !== url.slug) {
-      onUpdate(url.slug, newSlug, () => {});
+    setLoadingSave(true);
+    try {
+      if (newSlug && newSlug !== url.slug) {
+        onUpdate(url.slug, newSlug, () => {});
+      }
+      setEditing(false);
+    } finally {
+      setLoadingSave(false);
     }
-    setEditing(false);
   };
 
   const shortUrl = `${window.location.origin}/r/${url.slug}`;
@@ -62,7 +69,9 @@ export default function URLCard({
                 value={newSlug}
                 onChange={(e) => setNewSlug(e.target.value)}
               />
-              <Button onClick={handleSave}>Save</Button>
+              <LoadingButton onClick={handleSave} loading={loadingSave}>
+                Save
+              </LoadingButton>
             </Stack>
           ) : (
             <Stack direction="row" spacing={2} alignItems="center">

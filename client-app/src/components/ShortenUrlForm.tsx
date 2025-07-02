@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Stack, TextField, Button, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 interface Props {
   onSubmit: (originalUrl: string, slug?: string) => void;
@@ -9,12 +10,19 @@ interface Props {
 export default function ShortenUrlForm({ onSubmit, error }: Props) {
   const [originalUrl, setOriginalUrl] = useState("");
   const [slug, setSlug] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(originalUrl, slug || undefined);
-    setOriginalUrl("");
-    setSlug("");
+    setLoading(true);
+
+    try {
+      onSubmit(originalUrl, slug || undefined);
+      setOriginalUrl("");
+      setSlug("");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -32,9 +40,9 @@ export default function ShortenUrlForm({ onSubmit, error }: Props) {
           onChange={(e) => setSlug(e.target.value)}
           fullWidth
         />
-        <Button type="submit" variant="contained">
+        <LoadingButton type="submit" variant="contained" loading={loading}>
           Shorten
-        </Button>
+        </LoadingButton>
         {error && <Typography color="error">{error}</Typography>}
       </Stack>
     </form>

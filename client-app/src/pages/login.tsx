@@ -9,6 +9,7 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { login as authLogin } from "../services/auth.service";
 
 export default function LoginPage() {
@@ -17,16 +18,20 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       const res = await authLogin(email, password);
       login(res.token);
       router.push("/dashboard");
     } catch {
       setError("Invalid email or password.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,9 +56,9 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <Alert severity="error">{error}</Alert>}
-          <Button type="submit" variant="contained">
+          <LoadingButton type="submit" variant="contained" loading={loading}>
             Login
-          </Button>
+          </LoadingButton>
         </Stack>
       </form>
     </Container>

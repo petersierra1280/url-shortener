@@ -9,6 +9,7 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -16,15 +17,19 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       await register({ email, password });
       router.push("/dashboard");
     } catch {
       setError("Registration failed. Email may already be in use.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,9 +54,9 @@ export default function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <Alert severity="error">{error}</Alert>}
-          <Button type="submit" variant="contained">
+          <LoadingButton type="submit" variant="contained" loading={loading}>
             Register
-          </Button>
+          </LoadingButton>
         </Stack>
       </form>
     </Container>
