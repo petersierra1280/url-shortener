@@ -36,14 +36,18 @@ export default function DashboardPage() {
       router.push("/login");
     } else {
       setLoading(true);
-      fetchUserUrls(token, limit, offset)
-        .then((res) => {
+      (async () => {
+        try {
+          const res = await fetchUserUrls(token, limit, offset);
           setUrls(res.data);
           setTotal(res.total);
           setError("");
-        })
-        .catch(() => setError("Failed to load URLs"))
-        .finally(() => setLoading(false));
+        } catch {
+          setError("Failed to load URLs");
+        } finally {
+          setLoading(false);
+        }
+      })();
     }
   }, [token, offset]);
 
@@ -51,7 +55,7 @@ export default function DashboardPage() {
     setError("");
     try {
       const newUrl = await createUrl(token!, { originalUrl, slug });
-      setUrls([newUrl, ...urls]);
+      setUrls([newUrl, ...(urls ?? [])]);
       setToastMessage("Short URL created successfully!");
     } catch {
       setError(

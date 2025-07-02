@@ -31,7 +31,7 @@ export async function fetchUserUrls(
     headers: { Authorization: `Bearer ${token}` },
     params: { limit, offset },
   });
-  return res.data.data;
+  return res.data;
 }
 
 export async function updateSlug(
