@@ -15,9 +15,11 @@ export default function DashboardPage() {
   const { user, token, logout } = useAuth();
   const router = useRouter();
 
+  const pageParam = parseInt((router.query.page as string) || "1", 10);
+
   const [loading, setLoading] = useState(true);
   const [limit] = useState(10);
-  const [offset, setOffset] = useState(0);
+  const [offset, setOffset] = useState((pageParam - 1) * limit);
   const [total, setTotal] = useState(0);
 
   const [urls, setUrls] = useState<UrlItem[]>([]);
@@ -135,7 +137,14 @@ export default function DashboardPage() {
           total={total}
           limit={limit}
           offset={offset}
-          onPageChange={(newOffset) => setOffset(newOffset)}
+          onPageChange={(newOffset) => {
+            const newPage = Math.floor(newOffset / limit) + 1;
+            router.push({
+              pathname: "/dashboard",
+              query: { page: newPage },
+            });
+            setOffset(newOffset);
+          }}
         />
       )}
     </div>
