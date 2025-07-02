@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import api from "../../lib/api";
+import { Typography } from "@mui/material";
+import NotFoundPage from "../404";
 
 export default function RedirectPage() {
   const router = useRouter();
@@ -24,13 +26,8 @@ export default function RedirectPage() {
   }, [slug]);
 
   if (error) {
-    return (
-      <div>
-        <h1>404 Not Found</h1>
-        <p>{error}</p>
-      </div>
-    );
+    return <NotFoundPage />;
   }
 
-  return <p>Redirecting...</p>;
+  return <Typography>Redirecting...</Typography>;
 }
