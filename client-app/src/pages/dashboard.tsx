@@ -56,7 +56,7 @@ export default function DashboardPage() {
     try {
       const newUrl = await createUrl(token!, { originalUrl, slug });
       setUrls([newUrl, ...(urls ?? [])]);
-      setToastMessage("Short URL created successfully!");
+      setToastMessage("Short URL created successfully");
     } catch {
       setError(
         "Failed to shorten URL. Maybe the slug is taken or the URL is invalid."
@@ -66,7 +66,7 @@ export default function DashboardPage() {
 
   const handleCopy = (shortUrl: string) => {
     navigator.clipboard.writeText(shortUrl);
-    setToastMessage("Short URL copied to clipboard!");
+    setToastMessage("Short URL copied to clipboard");
   };
 
   const handleUpdateSlug = async (
@@ -86,6 +86,7 @@ export default function DashboardPage() {
     try {
       await deleteUrl(token!, slug);
       setUrls(urls.filter((u) => u.slug !== slug));
+      setToastMessage("Short URL deleted successfully");
     } catch (err) {
       setError("Failed to delete URL.");
     }
