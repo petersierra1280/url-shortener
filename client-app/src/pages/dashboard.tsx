@@ -104,7 +104,7 @@ export default function DashboardPage() {
 
       {loading && <Typography>Loading your URLs...</Typography>}
 
-      {!loading && urls.length === 0 && !error && (
+      {!loading && urls?.length === 0 && !error && (
         <Stack spacing={2} alignItems="center" mt={4}>
           <Typography color="text.secondary">
             You haven't created any short URLs yet.
@@ -121,7 +121,7 @@ export default function DashboardPage() {
         </Stack>
       )}
 
-      {urls.map((url) => (
+      {urls?.map((url) => (
         <URLCard
           key={url.id}
           url={url}
