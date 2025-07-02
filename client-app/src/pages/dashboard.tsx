@@ -13,6 +13,7 @@ import URLCard from "../components/URLCard";
 import Layout from "../components/Layout";
 import ShortenUrlForm from "../components/ShortenUrlForm";
 import PaginationControls from "../components/PaginationControls";
+import Toast from "../components/Toast";
 
 export default function DashboardPage() {
   const { token } = useAuth();
@@ -27,6 +28,7 @@ export default function DashboardPage() {
 
   const [urls, setUrls] = useState<UrlItem[]>([]);
   const [error, setError] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     if (!token) {
@@ -49,6 +51,7 @@ export default function DashboardPage() {
     try {
       const newUrl = await createUrl(token!, { originalUrl, slug });
       setUrls([newUrl, ...urls]);
+      setToastMessage("Short URL created successfully!");
     } catch {
       setError(
         "Failed to shorten URL. Maybe the slug is taken or the URL is invalid."
@@ -58,7 +61,7 @@ export default function DashboardPage() {
 
   const handleCopy = (shortUrl: string) => {
     navigator.clipboard.writeText(shortUrl);
-    alert(`Copied to clipboard: ${shortUrl}`);
+    setToastMessage("Short URL copied to clipboard!");
   };
 
   const handleUpdateSlug = async (
@@ -114,6 +117,9 @@ export default function DashboardPage() {
           offset={offset}
           onPageChange={(newOffset) => setOffset(newOffset)}
         />
+      )}
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage("")} />
       )}
     </Layout>
   );
