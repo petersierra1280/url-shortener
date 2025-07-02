@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { isValidUrl, isValidSlug } from "../lib/utils.validations";
 
 interface Props {
   onSubmit: (originalUrl: string, slug?: string) => void;
@@ -12,17 +13,6 @@ export default function ShortenUrlForm({ onSubmit, error }: Props) {
   const [slug, setSlug] = useState("");
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
-
-  const isValidUrl = (value: string): boolean => {
-    try {
-      const url = new URL(value);
-      return url.protocol === "http:" || url.protocol === "https:";
-    } catch {
-      return false;
-    }
-  };
-
-  const isValidSlug = (slug: string): boolean => /^[a-zA-Z0-9-_]+$/.test(slug);
 
   const displayError = formError || error;
 
