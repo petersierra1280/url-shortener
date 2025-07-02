@@ -9,6 +9,7 @@ import {
 } from "../services/url.service";
 import { useRouter } from "next/router";
 import URLCard from "../components/URLCard";
+import ShortenUrlForm from "../components/ShortenUrlForm";
 import PaginationControls from "../components/PaginationControls";
 
 export default function DashboardPage() {
@@ -43,20 +44,14 @@ export default function DashboardPage() {
     }
   }, [token, offset]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitUrl = async (originalUrl: string, slug?: string) => {
     setError("");
     try {
-      const newUrl = await createUrl(token!, {
-        originalUrl,
-        slug: slug || undefined,
-      });
+      const newUrl = await createUrl(token!, { originalUrl, slug });
       setUrls([newUrl, ...urls]);
-      setOriginalUrl("");
-      setSlug("");
-    } catch (err) {
+    } catch {
       setError(
-        "Failed to shorten URL. Maybe the slug is taken or URL is invalid."
+        "Failed to shorten URL. Maybe the slug is taken or the URL is invalid."
       );
     }
   };
@@ -93,19 +88,10 @@ export default function DashboardPage() {
       <h1>Welcome, {user?.email}</h1>
       <button onClick={logout}>Logout</button>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="Original URL"
-          value={originalUrl}
-          onChange={(e) => setOriginalUrl(e.target.value)}
-        />
-        <input
-          placeholder="Custom Slug (optional)"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-        />
-        <button type="submit">Shorten</button>
-      </form>
+      <ShortenUrlForm
+        onSubmit={(url, customSlug) => handleSubmitUrl(url, customSlug)}
+        error={error}
+      />
 
       {error && <p>{error}</p>}
 
