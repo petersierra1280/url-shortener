@@ -253,6 +253,31 @@ GET /r/abc123 → 302 Found → Location: https://example.com
 
 ---
 
+## Rate limiting
+
+The API enforces rate limiting per IP address using a middleware.
+
+Each IP can send up to `100` requests per 15 minutes
+
+Applies to:
+
+- `POST /auth/register`
+- `POST /auth/login`
+- All `/url` and `/r/:slug` endpoints
+
+Exceeding the limit returns:
+
+```json
+{
+  "statusCode": 429,
+  "message": "Rate limit exceeded. Try again later."
+}
+```
+
+This helps mitigate abuse on high-traffic endpoints like registration, login, and public redirects.
+
+---
+
 ## Scaffolding structure
 
 ```
