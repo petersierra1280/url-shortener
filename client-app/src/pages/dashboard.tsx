@@ -8,12 +8,14 @@ import {
   deleteUrl,
 } from "../services/url.service";
 import { useRouter } from "next/router";
+
 import URLCard from "../components/URLCard";
+import Layout from "../components/Layout";
 import ShortenUrlForm from "../components/ShortenUrlForm";
 import PaginationControls from "../components/PaginationControls";
 
 export default function DashboardPage() {
-  const { user, token, logout } = useAuth();
+  const { token } = useAuth();
   const router = useRouter();
 
   const pageParam = parseInt((router.query.page as string) || "1", 10);
@@ -24,8 +26,6 @@ export default function DashboardPage() {
   const [total, setTotal] = useState(0);
 
   const [urls, setUrls] = useState<UrlItem[]>([]);
-  const [originalUrl, setOriginalUrl] = useState("");
-  const [slug, setSlug] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -84,27 +84,17 @@ export default function DashboardPage() {
   };
 
   return (
-    <div>
-      <h1>Welcome, {user?.email}</h1>
-      <button onClick={logout}>Logout</button>
-
+    <Layout>
       <ShortenUrlForm
         onSubmit={(url, customSlug) => handleSubmitUrl(url, customSlug)}
         error={error}
       />
 
-      {error && <p>{error}</p>}
-
       <h2>Your URLs</h2>
-
       {loading && <p>Loading your URLs...</p>}
-
-      {urls.length === 0 && !error && (
-        <p style={{ color: "#666", fontStyle: "italic", marginTop: "1rem" }}>
-          You haven&apos;t created any short URLs yet.
-        </p>
+      {!loading && urls.length === 0 && !error && (
+        <p>You haven’t created any short URLs yet.</p>
       )}
-
       {urls.map((url) => (
         <URLCard
           key={url.id}
@@ -117,22 +107,14 @@ export default function DashboardPage() {
           onDelete={handleDelete}
         />
       ))}
-
-      {total > limit && (
+      {!loading && total > limit && (
         <PaginationControls
           total={total}
           limit={limit}
           offset={offset}
-          onPageChange={(newOffset) => {
-            const newPage = Math.floor(newOffset / limit) + 1;
-            router.push({
-              pathname: "/dashboard",
-              query: { page: newPage },
-            });
-            setOffset(newOffset);
-          }}
+          onPageChange={(newOffset) => setOffset(newOffset)}
         />
       )}
-    </div>
+    </Layout>
   );
 }
