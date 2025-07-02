@@ -24,8 +24,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState(
+    () => localStorage.getItem("token") || null
+  );
+  const [user, setUser] = useState<User | null>(() => {
+    const stored = localStorage.getItem("user");
+    return stored ? JSON.parse(stored) : null;
+  });
 
   useEffect(() => {
     const stored = Cookies.get("token");
@@ -37,14 +42,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = (newToken: string) => {
     Cookies.set("token", newToken);
+    localStorage.setItem("token", newToken);
     setToken(newToken);
-    setUser(jwtDecode<User>(newToken));
+    const decoded = jwtDecode<TokenPayload>(newToken);
+    const user: User = {
+      id: decoded.sub,
+      email: decoded.email,
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+    setUser(user);
   };
 
   const logout = () => {
     Cookies.remove("token");
     setToken(null);
     setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
   const register = async ({
@@ -58,6 +73,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const token = res.token;
     const decoded = jwtDecode<TokenPayload>(token);
     Cookies.set("token", token);
+    localStorage.setItem("token", token);
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ id: decoded.sub, email: decoded.email })
+    );
     setUser({ id: decoded.sub, email: decoded.email });
   };
 
