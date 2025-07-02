@@ -9,9 +9,10 @@ interface Props {
     newSlug: string,
     onError: (msg: string) => void
   ) => void;
+  onDelete: (slug: string) => void;
 }
 
-export default function URLCard({ url, onCopy, onUpdate }: Props) {
+export default function URLCard({ url, onCopy, onUpdate, onDelete }: Props) {
   const [editing, setEditing] = useState(false);
   const [newSlug, setNewSlug] = useState(url.slug);
   const [error, setError] = useState("");
@@ -60,6 +61,9 @@ export default function URLCard({ url, onCopy, onUpdate }: Props) {
         <strong>Visits:</strong> {url.visitCount}
       </p>
       <button onClick={() => onCopy(shortUrl)}>Copy</button>
+      <button onClick={() => confirm("Delete this URL?") && onDelete(url.slug)}>
+        Delete
+      </button>
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );

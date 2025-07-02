@@ -5,6 +5,7 @@ import {
   fetchUserUrls,
   UrlItem,
   updateSlug,
+  deleteUrl,
 } from "../services/url.service";
 import { useRouter } from "next/router";
 import URLCard from "../components/URLCard";
@@ -64,6 +65,15 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDelete = async (slug: string) => {
+    try {
+      await deleteUrl(token!, slug);
+      setUrls(urls.filter((u) => u.slug !== slug));
+    } catch (err) {
+      setError("Failed to delete URL.");
+    }
+  };
+
   return (
     <div>
       <h1>Welcome, {user?.email}</h1>
@@ -94,6 +104,7 @@ export default function DashboardPage() {
           onUpdate={(old, next, onError) =>
             handleUpdateSlug(old, next, onError)
           }
+          onDelete={handleDelete}
         />
       ))}
     </div>

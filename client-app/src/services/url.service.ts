@@ -37,3 +37,9 @@ export async function updateSlug(
   );
   return res.data;
 }
+
+export async function deleteUrl(token: string, slug: string): Promise<void> {
+  await api.delete(`/url/${slug}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
