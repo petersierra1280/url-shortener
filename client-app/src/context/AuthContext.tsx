@@ -23,31 +23,28 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState(
-    () => localStorage.getItem("token") || null
-  );
-  const [user, setUser] = useState<User | null>(() => {
-    const stored = localStorage.getItem("user");
-    return stored ? JSON.parse(stored) : null;
-  });
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
 
-    if (!storedToken) return;
+    if (storedToken && storedUser) {
+      try {
+        const decoded = jwtDecode<TokenPayload>(storedToken);
 
-    try {
-      const decoded = jwtDecode<TokenPayload>(storedToken);
+        if (!decoded.sub || !decoded.email) {
+          throw new Error("Missing required payload");
+        }
 
-      if (!decoded.sub || !decoded.email) {
-        throw new Error("Missing required payload");
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch {
+        logout();
       }
-
-      setToken(storedToken);
-      setUser({ id: decoded.sub, email: decoded.email });
-    } catch (err) {
-      // Invalid or malformed token → force logout
-      logout();
     }
   }, []);
 
