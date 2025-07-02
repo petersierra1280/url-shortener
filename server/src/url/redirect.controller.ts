@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res, Req } from '@nestjs/common';
+import { Controller, Get, Param, Req } from '@nestjs/common';
 import { UrlService } from './url.service';
 import { Request, Response } from 'express';
 import { UseInterceptors } from '@nestjs/common';
@@ -9,11 +9,11 @@ export class RedirectController {
 
   @UseInterceptors()
   @Get(':slug')
-  async redirect(@Param('slug') slug: string, @Req() req: Request, @Res() res: Response) {
+  async redirect(@Param('slug') slug: string, @Req() req: Request) {
     const originalUrl = await this.urlService.findBySlug(slug, {
       ip: req.ip,
       userAgent: req.headers['user-agent'] || '',
     });
-    return res.redirect(originalUrl);
+    return originalUrl;
   }
 }

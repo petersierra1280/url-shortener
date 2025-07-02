@@ -13,7 +13,7 @@ export default function RedirectPage() {
     async function resolveRedirect() {
       try {
         const res = await api.get(`/r/${slug}`);
-        const url = res.request.responseURL;
+        const url = res.data;
         router.replace(url);
       } catch (err) {
         setError("This link does not exist.");
