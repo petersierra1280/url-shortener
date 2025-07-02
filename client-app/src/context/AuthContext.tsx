@@ -75,8 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     email: string;
     password: string;
   }) => {
-    const res = await registerUser(email, password);
-    const token = res.token;
+    const token = await registerUser(email, password);
     const decoded = jwtDecode<TokenPayload>(token);
     localStorage.setItem("token", token);
     localStorage.setItem(
