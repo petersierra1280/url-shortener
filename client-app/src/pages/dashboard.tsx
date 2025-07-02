@@ -8,7 +8,7 @@ import {
   deleteUrl,
 } from "../services/url.service";
 import { useRouter } from "next/router";
-import { Typography } from "@mui/material";
+import { Typography, Stack, Button } from "@mui/material";
 
 import URLCard from "../components/URLCard";
 import Layout from "../components/Layout";
@@ -105,9 +105,20 @@ export default function DashboardPage() {
       {loading && <Typography>Loading your URLs...</Typography>}
 
       {!loading && urls.length === 0 && !error && (
-        <Typography color="text.secondary">
-          You haven't created any short URLs yet.
-        </Typography>
+        <Stack spacing={2} alignItems="center" mt={4}>
+          <Typography color="text.secondary">
+            You haven't created any short URLs yet.
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={() => {
+              const formEl = document.querySelector("form");
+              formEl?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            Create your first URL
+          </Button>
+        </Stack>
       )}
 
       {urls.map((url) => (
