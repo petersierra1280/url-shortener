@@ -58,14 +58,18 @@ export default function URLCard({
     <Card variant="outlined" sx={{ mb: 2 }}>
       <CardContent>
         <Stack spacing={1}>
-          <Typography variant="subtitle2">Original:</Typography>
+          <Typography variant="subtitle2" fontWeight="bold">
+            Original:
+          </Typography>
           <Typography variant="body2">
             <a href={url.originalUrl} target="_blank" rel="noopener noreferrer">
               {url.originalUrl}
             </a>
           </Typography>
 
-          <Typography variant="subtitle2">Slug:</Typography>
+          <Typography variant="subtitle2" fontWeight="bold">
+            Slug:
+          </Typography>
           {editing ? (
             <Stack direction="row" spacing={1}>
               <TextField
@@ -88,10 +92,14 @@ export default function URLCard({
 
           {stats && (
             <>
-              <Typography variant="subtitle2">Visits:</Typography>
+              <Typography variant="subtitle2" fontWeight="bold">
+                Visits:
+              </Typography>
               <Typography variant="body2">{stats.visitCount}</Typography>
+              <Typography variant="body2" fontWeight="bold">
+                Last visit:
+              </Typography>
               <Typography variant="body2">
-                Last Visit:{" "}
                 {stats.lastVisit
                   ? new Date(stats.lastVisit).toLocaleString()
                   : "Never"}
