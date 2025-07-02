@@ -104,6 +104,11 @@ export default function DashboardPage() {
       {error && <p>{error}</p>}
 
       <h2>Your URLs</h2>
+      {urls.length === 0 && !error && (
+        <p style={{ color: "#666", fontStyle: "italic", marginTop: "1rem" }}>
+          You haven&apos;t created any short URLs yet.
+        </p>
+      )}
       {urls.map((url) => (
         <URLCard
           key={url.id}
