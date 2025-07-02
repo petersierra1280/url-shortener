@@ -25,8 +25,6 @@ This app allows users to create, track, update, and delete short URLs — comple
 ### Installation
 
 ```bash
-cd server
-
 # 1. Install dependencies
 npm install
 
