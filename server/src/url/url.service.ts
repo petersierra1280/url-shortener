@@ -63,11 +63,19 @@ export class UrlService {
   }
 
   async updateSlug(userId: string, oldSlug: string, dto: UpdateSlugDto) {
-    const existing = await this.prisma.url.findUnique({ where: { slug: dto.newSlug } });
-    if (existing) throw new ConflictException('New slug is already taken');
-
     const url = await this.prisma.url.findUnique({ where: { slug: oldSlug } });
-    if (!url || url.userId !== userId) throw new NotFoundException('URL not found or forbidden');
+
+    if (!url || url.userId !== userId) {
+      throw new NotFoundException('URL not found or access denied');
+    }
+
+    const existingSlug = await this.prisma.url.findUnique({
+      where: { slug: dto.newSlug },
+    });
+
+    if (existingSlug) {
+      throw new ConflictException('Slug already taken');
+    }
 
     return this.prisma.url.update({
       where: { slug: oldSlug },
