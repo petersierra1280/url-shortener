@@ -24,3 +24,16 @@ export async function fetchUserUrls(token: string): Promise<UrlItem[]> {
   });
   return res.data.data;
 }
+
+export async function updateSlug(
+  token: string,
+  oldSlug: string,
+  newSlug: string
+): Promise<UrlItem> {
+  const res = await api.patch(
+    `/url/${oldSlug}`,
+    { newSlug },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return res.data;
+}

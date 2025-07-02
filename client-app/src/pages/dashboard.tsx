@@ -1,6 +1,11 @@
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
-import { createUrl, fetchUserUrls, UrlItem } from "../services/url.service";
+import {
+  createUrl,
+  fetchUserUrls,
+  UrlItem,
+  updateSlug,
+} from "../services/url.service";
 import { useRouter } from "next/router";
 import URLCard from "../components/URLCard";
 
@@ -46,6 +51,19 @@ export default function DashboardPage() {
     alert(`Copied to clipboard: ${shortUrl}`);
   };
 
+  const handleUpdateSlug = async (
+    oldSlug: string,
+    newSlug: string,
+    onError: (msg: string) => void
+  ) => {
+    try {
+      const updated = await updateSlug(token!, oldSlug, newSlug);
+      setUrls(urls.map((u) => (u.slug === oldSlug ? updated : u)));
+    } catch (err) {
+      onError("Slug update failed — it may already be taken or invalid.");
+    }
+  };
+
   return (
     <div>
       <h1>Welcome, {user?.email}</h1>
@@ -69,7 +87,14 @@ export default function DashboardPage() {
 
       <h2>Your URLs</h2>
       {urls.map((url) => (
-        <URLCard key={url.id} url={url} onCopy={handleCopy} />
+        <URLCard
+          key={url.id}
+          url={url}
+          onCopy={handleCopy}
+          onUpdate={(old, next, onError) =>
+            handleUpdateSlug(old, next, onError)
+          }
+        />
       ))}
     </div>
   );
