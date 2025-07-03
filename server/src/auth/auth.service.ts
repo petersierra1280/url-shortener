@@ -13,8 +13,9 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
+    const normalizedEmail = dto.email.toLowerCase();
     const existingUser = await this.prisma.user.findUnique({
-      where: { email: dto.email },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -25,7 +26,7 @@ export class AuthService {
 
     const user = await this.prisma.user.create({
       data: {
-        email: dto.email,
+        email: normalizedEmail,
         password: hashed,
       },
     });
