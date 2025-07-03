@@ -245,7 +245,7 @@ Returns the original URL for the given slug.
 
 **Example:**
 
-```json
+```bash
 GET /r/abc123 → "https://example.com"
 ```
 
