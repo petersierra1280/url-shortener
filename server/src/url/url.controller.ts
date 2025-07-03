@@ -16,12 +16,6 @@ export class UrlController {
     return this.urlService.create(req.user['sub'], dto);
   }
 
-  @Get(':slug')
-  async redirect(@Param('slug') slug: string) {
-    const url = await this.urlService.findBySlug(slug);
-    return { destination: url };
-  }
-
   @UseGuards(JwtAuthGuard)
   @Patch(':slug')
   updateSlug(@Req() req: RequestWithUser, @Param('slug') slug: string, @Body() dto: UpdateSlugDto) {

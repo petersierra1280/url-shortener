@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Req } from '@nestjs/common';
 import { UrlService } from './url.service';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { UseInterceptors } from '@nestjs/common';
 
 @Controller('r')

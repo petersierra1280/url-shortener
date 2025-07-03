@@ -235,19 +235,21 @@ Top 5 most visited URLs (owned by the user).
 
 **GET** `/r/:slug`
 
-Redirects to the original URL.
+Returns the original URL for the given slug.
 
 **Behavior:**
 
 - Logs visit
 - Increments counter
-- Returns HTTP `302` redirect
+- Returns the original URL as a plain value
 
 **Example:**
 
-```bash
-GET /r/abc123 → 302 Found → Location: https://example.com
+```json
+GET /r/abc123 → "https://example.com"
 ```
+
+> Note: The frontend (`[slug].tsx`) calls this endpoint, receives the original URL, and then performs the redirect.
 
 ---
 
